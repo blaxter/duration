@@ -27,7 +27,7 @@
 # 	=> "2 w, 0 d, 0 h, 2 m, 30 s"
 #
 class Duration
-	attr_reader :total, :weeks, :days, :hours, :minutes, :seconds
+	attr_reader :total, :weeks, :days, :hours, :minutes
 
 	WEEK    =  60 * 60 * 24 * 7
 	DAY     =  60 * 60 * 24
@@ -46,13 +46,19 @@ class Duration
 	# 	=> #<Duration: 1 week, 3 days, 2 minutes and 30 seconds>
 	#
 	def initialize(seconds_or_attr)
-		if (h = seconds_or_attr).kind_of? Hash
-			seconds =  0
-			seconds += h[:weeks]   * WEEK   if h.key? :weeks
-			seconds += h[:days]    * DAY    if h.key? :days
-			seconds += h[:hours]   * HOUR   if h.key? :hours
-			seconds += h[:minutes] * MINUTE if h.key? :minutes
-			seconds += h[:seconds] * SECOND if h.key? :seconds
+		if seconds_or_attr.kind_of? Hash
+			# Part->time map table.
+			h = {:weeks => WEEK, :days => DAY, :hours => HOUR, :minutes => MINUTE, :seconds => SECOND}
+
+			# Loop through each valid part, ignore all others.
+			seconds = seconds_or_attr.inject(0) do |sec, args|
+				# Grab the part of the duration (week, day, whatever) and the number of seconds for it.
+				part, time = args
+
+				# Map each part to their number of seconds and the given value.
+				# {:weeks => 2} maps to h[:weeks] -- so... weeks = WEEK * 2
+				if h.key?(prt = part.to_s.to_sym) then sec + time * h[prt] else 0 end
+			end
 		else
 			seconds = seconds_or_attr
 		end
@@ -96,27 +102,96 @@ class Duration
 		end.gsub('%%', '%')
 	end
 
-	# Intercept certain attribute writers. Intercepts `weeks=', `days=', `hours=',
-	# `minutes=', `seconds=', and `total='
+	# Get the number of seconds of a given part, or simply just get the number of
+	# seconds.
 	#
 	# *Example*
 	#
-	# 	d = Duration.new(:days => 6)
-	# 	=> #<Duration: 6 days>
-	# 	d.days += 1; d
-	# 	=> #<Duration: 1 week>
+	# 	d = Duration.new(:weeks => 1, :days => 1, :hours => 1, :seconds => 30)
+	# 	=> #<Duration: 1 week, 1 day, 1 hour and 30 seconds>
+	# 	d.seconds(:weeks)
+	# 	=> 604800
+	# 	d.seconds(:days)
+	# 	=> 86400
+	# 	d.seconds(:hours)
+	# 	=> 3600
+	# 	d.seconds
+	# 	=> 30
 	#
-	def method_missing(method, *args)
-		case method
-		when :weeks=   then initialize(WEEK   * args[0] + (@total - WEEK   * @weeks  ))
-		when :days=    then initialize(DAY    * args[0] + (@total - DAY    * @days   ))
-		when :hours=   then initialize(HOUR   * args[0] + (@total - HOUR   * @hours  ))
-		when :minutes= then initialize(MINUTE * args[0] + (@total - MINUTE * @minutes))
-		when :seconds= then initialize(SECOND * args[0] + (@total - SECOND * @seconds))
-		when :total=   then initialize(args[0])
+	def seconds(part = nil)
+		# Table mapping
+		h = {:weeks => WEEK, :days => DAY, :hours => HOUR, :minutes => MINUTE}
+
+		if [:weeks, :days, :hours, :minutes].include? part
+			__send__(part) * h[part]
 		else
-			raise NoMethodError, "undefined method `#{method}' for #{inspect}"
+			@seconds
 		end
+	end
+
+	# Set the number of weeks.
+	#
+	# *Example*
+	#
+	# 	d = Duration.new(0)
+	# 	=> #<Duration: ...>
+	# 	d.weeks = 2; d
+	# 	=> #<Duration: 2 weeks>
+	#
+	def weeks=(n)
+		initialize(:weeks => n, :seconds => @total - seconds(:weeks))
+	end
+
+	# Set the number of days.
+	#
+	# *Example*
+	#
+	# 	d = Duration.new(0)
+	# 	=> #<Duration: ...>
+	# 	d.days = 5; d
+	# 	=> #<Duration: 5 days>
+	#
+	def days=(n)
+		initialize(:days => n, :seconds => @total - seconds(:days))
+	end
+
+	# Set the number of hours.
+	#
+	# *Example*
+	#
+	# 	d = Duration.new(0)
+	# 	=> #<Duration: ...>
+	# 	d.hours = 5; d
+	# 	=> #<Duration: 5 hours>
+	#
+	def hours=(n)
+		initialize(:hours => n, :seconds => @total - seconds(:hours))
+	end
+
+	# Set the number of minutes.
+	#
+	# *Example*
+	#
+	# 	d = Duration.new(0)
+	# 	=> #<Duration: ...>
+	# 	d.minutes = 30; d
+	# 	=> #<Duration: 30 minutes>
+	#
+	def minutes=(n)
+		initialize(:minutes => n, :seconds => @total - seconds(:minutes))
+	end
+
+	# Set the number of minutes.
+	#
+	# *Example*
+	#
+	# 	d = Duration.new(0)
+	# 	=> #<Duration: ...>
+	# 	d.seconds = 30; d
+	# 	=> #<Duration: 30 seconds>
+	#
+	def seconds=(n)
+		initialize(:seconds => (@total + n) - @seconds)
 	end
 
 	# Friendly, human-readable string representation of the duration.
