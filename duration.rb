@@ -27,6 +27,8 @@
 # 	=> "2 w, 0 d, 0 h, 2 m, 30 s"
 #
 class Duration
+	include Enumerable
+
 	attr_reader :total, :weeks, :days, :hours, :minutes
 
 	WEEK    =  60 * 60 * 24 * 7
@@ -129,6 +131,34 @@ class Duration
 		end
 	end
 
+	# For iterating through the duration set of weeks, days, hours, minutes, and
+	# seconds.
+	#
+	# *Example*
+	#
+	# 	Duration.new(:weeks => 1, :seconds => 30).each do |part, time|
+	# 		puts "part: #{part}, time: #{time}"
+	# 	end
+	#
+	# _Output_
+	#
+	# 	part: weeks, time: 1
+	# 	part: days, time: 0
+	# 	part: hours, time: 0
+	# 	part: minutes, time: 0
+	# 	part: seconds, time: 30
+	#
+	def each
+		[['weeks'   ,  @weeks  ],
+		 ['days'    ,  @days   ],
+		 ['hours'   ,  @hours  ],
+		 ['minutes' ,  @minutes],
+		 ['seconds' ,  @seconds]].each do |part, time|
+		 	# Yield to block
+			yield part, time
+		end
+	end
+
 	# Set the number of weeks.
 	#
 	# *Example*
@@ -206,12 +236,7 @@ class Duration
 	def to_s
 		str = ''
 
-		[['weeks'   ,  @weeks  ],
-		 ['days'    ,  @days   ],
-		 ['hours'   ,  @hours  ],
-		 ['minutes' ,  @minutes],
-		 ['seconds' ,  @seconds]].each do |part, time|
-
+		each do |part, time|
 			# Skip any zero times.
 			next if time.zero?
 
