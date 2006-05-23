@@ -165,8 +165,13 @@ class Duration
 
 	# Calls `<=>' on Duration#total.
 	#
+	# *Example*
+	#
+	# 	5.days == 24.hours * 5
+	# 	=> true
+	#
 	def <=>(other)
-		@total <=> other
+		@total <=> other.to_i
 	end
 
 	# Set the number of weeks.
