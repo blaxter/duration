@@ -213,6 +213,14 @@ class Duration
 	alias to_i total
 end
 
+# The following important additions are made to Numeric:
+#
+# 	Numeric#weeks   -- Create a Duration object with given weeks
+# 	Numeric#days    -- Create a Duration object with given days
+# 	Numeric#hours   -- Create a Duration object with given hours
+# 	Numeric#minutes -- Create a Duration object with given minutes
+# 	Numeric#seconds -- Create a Duration object with given seconds
+#
 class Numeric
 	alias __numeric_old_method_missing method_missing
 
