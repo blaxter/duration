@@ -27,6 +27,7 @@
 # 	=> "2 w, 0 d, 0 h, 2 m, 30 s"
 #
 class Duration
+	include Comparable
 	include Enumerable
 
 	attr_reader :total, :weeks, :days, :hours, :minutes
@@ -160,6 +161,12 @@ class Duration
 		 	# Yield to block
 			yield part, time
 		end
+	end
+
+	# Calls `<=>' on Duration#total.
+	#
+	def <=>(other)
+		@total <=> other
 	end
 
 	# Set the number of weeks.
@@ -313,11 +320,7 @@ class Duration
 		self.class.new(@total / other.to_i)
 	end
 
-	alias to_i      total
-	alias add       +
-	alias subtract  -
-	alias multiply  *
-	alias divide    /
+	alias to_i total
 end
 
 # The following important additions are made to Numeric:
