@@ -309,16 +309,11 @@ class Duration
 		self.class.new(@total / other.to_i)
 	end
 
-	alias to_i         total
-	alias set_weeks    weeks=
-	alias set_days     days=
-	alias set_hours    hours=
-	alias set_minutes  minutes=
-	alias set_seconds  seconds=
-	alias add          +
-	alias subtract     -
-	alias multiply     *
-	alias divide       /
+	alias to_i      total
+	alias add       +
+	alias subtract  -
+	alias multiply  *
+	alias divide    /
 end
 
 # The following important additions are made to Numeric:
