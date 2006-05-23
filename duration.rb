@@ -214,7 +214,7 @@ class Duration
 end
 
 class Numeric
-	alias __Numeric_method_missing method_missing
+	alias __numeric_old_method_missing method_missing
 
 	# Intercept calls to #weeks, #days, #hours, #minutes, #seconds because Rails
 	# defines their own methods, so I'd like to prevent any redefining of Rails'
@@ -226,14 +226,10 @@ class Numeric
 	# 	=> #<Duration: 2 minutes and 20 seconds>
 	#
 	def method_missing(method, *args)
-		case method
-		when :weeks   then Duration.new(Duration::WEEK   * self)
-		when :days    then Duration.new(Duration::DAY    * self)
-		when :hours   then Duration.new(Duration::HOUR   * self)
-		when :minutes then Duration.new(Duration::MINUTE * self)
-		when :seconds then Duration.new(Duration::SECOND * self)
+		if [:weeks, :days, :hours, :minutes, :seconds].include? method
+			Duration.new(method => self)
 		else
-			__Numeric_method_missing(method, *args)
+			__numeric_old_method_missing(method, *args)
 		end
 	end
 end
