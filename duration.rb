@@ -43,7 +43,6 @@ class Duration
 	#
 	# 	d = Duration.new(60 * 60 * 24 * 10 + 120 + 30)
 	# 	=> #<Duration: 1 week, 3 days, 2 minutes and 30 seconds>
-	#
 	# 	d = Duration.new(:weeks => 1, :days => 3, :minutes => 2, :seconds => 30)
 	# 	=> #<Duration: 1 week, 3 days, 2 minutes and 30 seconds>
 	#
@@ -77,12 +76,12 @@ class Duration
 	#
 	# *Identifiers*
 	#
-	# 	%w - Number of weeks
-	# 	%d - Number of days
-	# 	%h - Number of hours
-	# 	%m - Number of minutes
-	# 	%s - Number of seconds
-	# 	%% - Literal `%' character
+	# 	%w -- Number of weeks
+	# 	%d -- Number of days
+	# 	%h -- Number of hours
+	# 	%m -- Number of minutes
+	# 	%s -- Number of seconds
+	# 	%% -- Literal `%' character
 	#
 	# *Example*
 	#
@@ -310,7 +309,16 @@ class Duration
 		self.class.new(@total / other.to_i)
 	end
 
-	alias to_i total
+	alias to_i         total
+	alias set_weeks    weeks=
+	alias set_days     days=
+	alias set_hours    hours=
+	alias set_minutes  minutes=
+	alias set_seconds  seconds=
+	alias add          +
+	alias subtract     -
+	alias multiply     *
+	alias divide       /
 end
 
 # The following important additions are made to Numeric:
@@ -324,9 +332,9 @@ end
 class Numeric
 	alias __numeric_old_method_missing method_missing
 
-	# Intercept calls to #weeks, #days, #hours, #minutes, #seconds because Rails
-	# defines their own methods, so I'd like to prevent any redefining of Rails'
-	# methods.
+	# Intercept calls to .weeks, .days, .hours, .minutes and .seconds because
+	# Rails defines its own methods, so I'd like to prevent any redefining of
+	# Rails' methods.
 	#
 	# *Example*
 	#
