@@ -47,7 +47,7 @@ class Duration
 	# 	d = Duration.new(:weeks => 1, :days => 3, :minutes => 2, :seconds => 30)
 	# 	=> #<Duration: 1 week, 3 days, 2 minutes and 30 seconds>
 	#
-	def initialize(seconds_or_attr)
+	def initialize(seconds_or_attr = 0)
 		if seconds_or_attr.kind_of? Hash
 			# Part->time map table.
 			h = {:weeks => WEEK, :days => DAY, :hours => HOUR, :minutes => MINUTE, :seconds => SECOND}
