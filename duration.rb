@@ -81,6 +81,8 @@ class Duration
 	# 	%h -- Number of hours
 	# 	%m -- Number of minutes
 	# 	%s -- Number of seconds
+	# 	%t -- Total number of seconds
+	# 	%x -- Duration#to_s
 	# 	%% -- Literal `%' character
 	#
 	# *Example*
@@ -96,9 +98,11 @@ class Duration
 		 'd' => @days   ,
 		 'h' => @hours  ,
 		 'm' => @minutes,
-		 's' => @seconds}
+		 's' => @seconds,
+		 't' => @total  ,
+		 'x' => to_s}
 
-		fmt.gsub(/%?%(w|d|h|m|s)/) do |match|
+		fmt.gsub(/%?%(w|d|h|m|s|t|x)/) do |match|
 			match.size == 3 ? match : h[match[1..1]]
 		end.gsub('%%', '%')
 	end
