@@ -328,6 +328,104 @@ class Duration
 	alias to_i total
 end
 
+# BigDuration is a variant of Duration that supports years and months. Support
+# for months is not accurate, as a month is assumed to be 30 days so use at your
+# own risk.
+#
+class BigDuration < Duration
+	attr_reader :years, :months
+
+	YEAR   =  60 * 60 * 24 * 30 * 12
+	MONTH  =  60 * 60 * 24 * 30
+
+	# Similar to Duration.new except that BigDuration.new supports `:years' and
+	# `:months' and will also handle years and months correctly when breaking down
+	# the seconds.
+	#
+	def initialize(seconds_or_attr)
+		if seconds_or_attr.kind_of? Hash
+			# Part->time map table.
+			h =\
+			{:years    =>  YEAR  ,
+			 :months   =>  MONTH ,
+			 :weeks    =>  WEEK  ,
+			 :days     =>  DAY   ,
+			 :hours    =>  HOUR  ,
+			 :minutes  =>  MINUTE,
+			 :seconds  =>  SECOND}
+
+			# Loop through each valid part, ignore all others.
+			seconds = seconds_or_attr.inject(0) do |sec, args|
+				# Grab the part of the duration (week, day, whatever) and the number of seconds for it.
+				part, time = args
+
+				# Map each part to their number of seconds and the given value.
+				# {:weeks => 2} maps to h[:weeks] -- so... weeks = WEEK * 2
+				if h.key?(prt = part.to_s.to_sym) then sec + time * h[prt] else 0 end
+			end
+		else
+			seconds = seconds_or_attr
+		end
+
+		@total, array = seconds.to_f.round, []
+		@seconds = [YEAR, MONTH, WEEK, DAY, HOUR, MINUTE].inject(@total) do |left, part|
+			array << left / part; left % part
+		end
+
+		@years, @months, @weeks, @days, @hours, @minutes = array
+	end
+
+	# BigDuration variant of Duration#strftime.
+	#
+	# *Identifiers: BigDuration*
+	#
+	# 	%y -- Number of years
+	# 	%m -- Number of months
+	#
+	def strftime(fmt)
+		h = {'y' => @years, 'M' => @months}
+		super(fmt.gsub(/%?%(y|M)/) { |match| match.size == 3 ? match : h[match[1..1]] })
+	end
+
+	# Similar to Duration#each except includes years and months in the interation.
+	#
+	def each
+		[['years'   ,  @years  ],
+		 ['months'  ,  @months ],
+		 ['weeks'   ,  @weeks  ],
+		 ['days'    ,  @days   ],
+		 ['hours'   ,  @hours  ],
+		 ['minutes' ,  @minutes],
+		 ['seconds' ,  @seconds]].each do |part, time|
+		 	# Yield to block
+			yield part, time
+		end
+	end
+
+	# Derived from Duration#seconds, but supports `:years' and `:months' as well.
+	#
+	def seconds(part = nil)
+		h = {:years => YEAR, :months => MONTH}
+		if [:years, :months].include? part
+			__send__(part) * h[part]
+		else
+			super(part)
+		end
+	end
+
+	# Set the number of years in the BigDuration.
+	#
+	def years=(n)
+		initialize(:years => n, :seconds => @total - seconds(:years))
+	end
+
+	# Set the number of months in the BigDuration.
+	#
+	def months=(n)
+		initialize(:months => n, :seconds => @total - seconds(:months))
+	end
+end
+
 # The following important additions are made to Numeric:
 #
 # 	Numeric#weeks   -- Create a Duration object with given weeks
@@ -335,6 +433,14 @@ end
 # 	Numeric#hours   -- Create a Duration object with given hours
 # 	Numeric#minutes -- Create a Duration object with given minutes
 # 	Numeric#seconds -- Create a Duration object with given seconds
+#
+# BigDuration support:
+#
+# 	Numeric#years   -- Create a BigDuration object with given years
+# 	Numeric#months  -- Create a BigDuration object with given months
+#
+# BigDuration objects can be created from regular weeks, days, hours, etc by
+# providing `:big' as an argument to the above Numeric methods.
 #
 class Numeric
 	alias __numeric_old_method_missing method_missing
@@ -349,11 +455,11 @@ class Numeric
 	# 	10.duration
 	# 	=> #<Duration: 10 seconds>
 	#
-	def duration(part = nil)
-		if [:weeks, :days, :hours, :minutes, :seconds].include? part
-			Duration.new(part => self)
+	def duration(part = nil, klass = Duration)
+		if [:years, :months, :weeks, :days, :hours, :minutes, :seconds].include? part
+			klass.new(part => self)
 		else
-			Duration.new(self)
+			klass.new(self)
 		end
 	end
 
@@ -362,6 +468,16 @@ class Numeric
 	# Rails' methods. If these methods don't get captured, then alternatively
 	# Numeric#duration can be used.
 	#
+	# BigDuration methods include .years and .months, also BigDuration objects
+	# can be created from any time such as weeks or minutes and even seconds.
+	#
+	# *Example: BigDuration*
+	#
+	# 	5.years
+	# 	=> #<BigDuration: 5 years>
+	# 	10.minutes(:big)
+	# 	=> #<BigDuration: 10 minutes>
+	#
 	# *Example*
 	#
 	# 	140.seconds
@@ -369,7 +485,13 @@ class Numeric
 	#
 	def method_missing(method, *args)
 		if [:weeks, :days, :hours, :minutes, :seconds].include? method
-			duration(method)
+			if args.size > 0 && args[0] == :big
+				duration(method, BigDuration)
+			else
+				duration(method)
+			end
+		elsif [:years, :months].include? method
+			duration(method, BigDuration)
 		else
 			__numeric_old_method_missing(method, *args)
 		end
@@ -387,7 +509,7 @@ class Time
 	# 	Time.now.duration
 	# 	=> #<Duration: 1898 weeks, 6 days, 1 hour, 12 minutes and 1 second>
 	#
-	def duration
-		Duration.new(to_i)
+	def duration(type = nil)
+		if type == :big then BigDuration.new(to_i) else Duration.new(to_i) end
 	end
 end
