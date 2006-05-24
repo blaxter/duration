@@ -339,9 +339,28 @@ end
 class Numeric
 	alias __numeric_old_method_missing method_missing
 
+	# Create a Duration object using self where self could represent weeks, days,
+	# hours, minutes, and seconds.
+	#
+	# *Example*
+	#
+	# 	10.duration(:weeks)
+	# 	=> #<Duration: 10 weeks>
+	# 	10.duration
+	# 	=> #<Duration: 10 seconds>
+	#
+	def duration(part = nil)
+		if [:weeks, :days, :hours, :minutes, :seconds].include? part
+			Duration.new(part => self)
+		else
+			Duration.new(self)
+		end
+	end
+
 	# Intercept calls to .weeks, .days, .hours, .minutes and .seconds because
 	# Rails defines its own methods, so I'd like to prevent any redefining of
-	# Rails' methods.
+	# Rails' methods. If these methods don't get captured, then alternatively
+	# Numeric#duration can be used.
 	#
 	# *Example*
 	#
@@ -350,7 +369,7 @@ class Numeric
 	#
 	def method_missing(method, *args)
 		if [:weeks, :days, :hours, :minutes, :seconds].include? method
-			Duration.new(method => self)
+			duration(method)
 		else
 			__numeric_old_method_missing(method, *args)
 		end
