@@ -325,6 +325,18 @@ class Duration
 		self.class.new(@total / other.to_i)
 	end
 
+	# Get the BigDuration of this Duration.
+	#
+	def bigger
+		BigDuration.new(@total)
+	end
+
+	# Compatibility method to BigDuration#smaller
+	#
+	def smaller
+		self
+	end
+
 	alias to_i total
 end
 
@@ -377,7 +389,7 @@ class BigDuration < Duration
 
 	# BigDuration variant of Duration#strftime.
 	#
-	# *Identifiers: BigDuration*
+	# *Identifiers*: *BigDuration*
 	#
 	# 	%y -- Number of years
 	# 	%m -- Number of months
@@ -423,6 +435,18 @@ class BigDuration < Duration
 	#
 	def months=(n)
 		initialize(:months => n, :seconds => @total - seconds(:months))
+	end
+
+	# Get the Duration of this BigDuration.
+	#
+	def smaller
+		Duration.new(@total)
+	end
+
+	# Compatibility method to Duration#bigger
+	#
+	def bigger
+		self
 	end
 end
 
@@ -471,7 +495,7 @@ class Numeric
 	# BigDuration methods include .years and .months, also BigDuration objects
 	# can be created from any time such as weeks or minutes and even seconds.
 	#
-	# *Example: BigDuration*
+	# *Example*: *BigDuration*
 	#
 	# 	5.years
 	# 	=> #<BigDuration: 5 years>
