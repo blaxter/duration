@@ -342,7 +342,7 @@ class BigDuration < Duration
 	# `:months' and will also handle years and months correctly when breaking down
 	# the seconds.
 	#
-	def initialize(seconds_or_attr)
+	def initialize(seconds_or_attr = 0)
 		if seconds_or_attr.kind_of? Hash
 			# Part->time map table.
 			h =\
