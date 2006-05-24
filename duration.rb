@@ -356,3 +356,19 @@ class Numeric
 		end
 	end
 end
+
+# Time#duration has been added to convert the UNIX timestamp into a Duration.
+# See Time#duration for an example.
+#
+class Time
+	# Create a Duration object from the UNIX timestamp.
+	#
+	# *Example*
+	#
+	# 	Time.now.duration
+	# 	=> #<Duration: 1898 weeks, 6 days, 1 hour, 12 minutes and 1 second>
+	#
+	def duration
+		Duration.new(to_i)
+	end
+end
