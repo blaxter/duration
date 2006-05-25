@@ -464,7 +464,7 @@ end
 # 	Numeric#months  -- Create a BigDuration object with given months
 #
 # BigDuration objects can be created from regular weeks, days, hours, etc by
-# providing `:big' as an argument to the above Numeric methods.
+# providing anything but nil or false as an argument to the above Numeric methods.
 #
 class Numeric
 	alias __numeric_old_method_missing method_missing
@@ -499,7 +499,7 @@ class Numeric
 	#
 	# 	5.years
 	# 	=> #<BigDuration: 5 years>
-	# 	10.minutes(:big)
+	# 	10.minutes(true)
 	# 	=> #<BigDuration: 10 minutes>
 	#
 	# *Example*
@@ -509,7 +509,7 @@ class Numeric
 	#
 	def method_missing(method, *args)
 		if [:weeks, :days, :hours, :minutes, :seconds].include? method
-			if args.size > 0 && args[0] == :big
+			if args.size > 0 && args[0]
 				duration(method, BigDuration)
 			else
 				duration(method)
@@ -533,7 +533,7 @@ class Time
 	# 	Time.now.duration
 	# 	=> #<Duration: 1898 weeks, 6 days, 1 hour, 12 minutes and 1 second>
 	#
-	def duration(type = nil)
-		if type == :big then BigDuration.new(to_i) else Duration.new(to_i) end
+	def duration(bigger = nil)
+		if bigger then BigDuration.new(to_i) else Duration.new(to_i) end
 	end
 end
