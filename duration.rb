@@ -325,6 +325,12 @@ class Duration
 		self.class.new(@total / other.to_i)
 	end
 
+	# Remainder of two Durations.
+	#
+	def %(other)
+		self.class.new(@total % other.to_i)
+	end
+
 	# Get the BigDuration of this Duration.
 	#
 	def bigger
