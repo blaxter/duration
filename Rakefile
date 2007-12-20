@@ -13,7 +13,7 @@ $copytag = [
 
 desc "release #{$release}"
 task :release do
-  #system 'gem', 'build', "#{$package}.gemspec"
+  system 'gem', 'build', "#{$package}.gemspec"
   system 'svn', 'ci', '--editor-cmd', $svnedit
-  #system 'svn', 'copy', *$copytag
+  system 'svn', 'copy', *$copytag
 end
