@@ -18,8 +18,8 @@ class Duration
         next unless mod.kind_of?(Module) and mod.const_defined?('LOCALE')
         
         locale    = mod.const_get('LOCALE').to_sym  # Locale name
-        plurals   = mod.const_defined?('PLURALS') ? mod.const_get('PLURALS') : DEFAULT_LOCALE # Unit plurals
-        singulars = mod.const_defined?('SINGULARS') ? mod.const_get('SINGULARS') : DEFAULT_LOCALE # Unit singulars
+        plurals   = mod.const_get('PLURALS')        # Unit plurals
+        singulars = mod.const_get('SINGULARS')      # Unit singulars
         
         if mod.const_defined? 'FORMAT'
           format = mod.const_get 'FORMAT'
