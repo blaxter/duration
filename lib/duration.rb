@@ -47,6 +47,18 @@ class Duration
     new(Time.now)
   end
   
+  # Calculates the duration "since" a given time.  Assumes that the time is in
+  # the past.  Does not error if the time is in the present or future.
+  def Duration.since(time)
+    new(Time.now.to_i - time.to_i)
+  end
+  
+  # Calculates the duration "until" a given time.  Assumes that the time is in
+  # the future.  Does not error if a time in the present or past is given.
+  def Duration.until(time)
+    new(time.to_i - Time.now.to_i)
+  end
+  
   # Initialize a duration.  `args' can be a hash or anything else.  If a hash is
   # passed, it will be scanned for a key=>value pair of time units such as those
   # listed in the Duration::UNITS array or Duration::MULTIPLES hash.
