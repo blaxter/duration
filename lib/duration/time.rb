@@ -1,4 +1,8 @@
+require 'duration/time/holidays'
+
 class Time
+  extend Holidays
+  
   def to_duration
     Duration.new(self)
   end
