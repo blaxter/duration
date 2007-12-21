@@ -7,3 +7,4 @@
 * added Readme.txt, License.txt, Manifest.txt and other newgem files
 * Duration::VERSION is now a module: Duration::VERSION::{MAJOR,MINOR,TINY,STRING}
 * added ::christmas and ::new_years to Time::Holidays
+* added some docs to duration/localizations/english.rb for translators to read
