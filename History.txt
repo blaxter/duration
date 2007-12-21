@@ -6,3 +6,4 @@
 * removed README, LICENSE, duration.gemspec
 * added Readme.txt, License.txt, Manifest.txt and other newgem files
 * Duration::VERSION is now a module: Duration::VERSION::{MAJOR,MINOR,TINY,STRING}
+* added ::christmas and ::new_years to Time::Holidays
