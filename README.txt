@@ -1,6 +1,5 @@
 = Project
-== Duration
-== http://rubyforge.org/projects/duration
+Duration <http://rubyforge.org/projects/duration>
 
 = Author
 Matthew Harris <matt@matthewharris.org>

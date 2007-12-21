@@ -1,0 +1,8 @@
+== 0.1.1
+
+* Numeric#weeks is actually defined this time
+* Default locales aren't assumed for missing constant definitions in other locales
+* migrated to newgem schema
+* removed README, LICENSE, duration.gemspec
+* added Readme.txt, License.txt, Manifest.txt and other newgem files
+* Duration::VERSION is now a module: Duration::VERSION::{MAJOR,MINOR,TINY,STRING}

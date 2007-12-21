@@ -1,9 +1,9 @@
 class Duration
-  # Duration library version number
-  VERSION = '0.1.1'
+  module VERSION
+    MAJOR = 0
+    MINOR = 1
+    TINY  = 1
 
-  # Duration library version number
-  def Duration.version
-    VERSION
+    STRING = [MAJOR, MINOR, TINY].join('.')
   end
 end
