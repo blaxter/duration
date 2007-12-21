@@ -32,7 +32,7 @@ class Numeric
   end unless Numeric.instance_methods.include? 'days'
   
   # Number of seconds using the number as the base of weeks.
-  def week
+  def weeks
     to_i * 604800
   end unless Numeric.instance_methods.include? 'weeks'
   
