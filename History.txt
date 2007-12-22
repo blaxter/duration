@@ -8,3 +8,4 @@
 * Duration::VERSION is now a module: Duration::VERSION::{MAJOR,MINOR,TINY,STRING}
 * added ::christmas and ::new_years to Time::Holidays
 * added some docs to duration/localizations/english.rb for translators to read
+* added French and Dutch localizations (thanks to Jean-François, Jean-François, Siep Korteling)
