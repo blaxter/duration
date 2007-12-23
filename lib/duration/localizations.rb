@@ -3,6 +3,7 @@ require 'duration/localizations/english'
 require 'duration/localizations/korean'
 require 'duration/localizations/french'
 require 'duration/localizations/dutch'
+require 'duration/localizations/polish'
 
 class Duration
   # Contains localizations for the time formatters.  Standard locales cannot be
