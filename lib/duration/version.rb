@@ -6,4 +6,8 @@ class Duration
 
     STRING = [MAJOR, MINOR, TINY].join('.')
   end
+  
+  def Duration.version
+    VERSION::STRING
+  end
 end
