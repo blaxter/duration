@@ -52,22 +52,19 @@ end
 
 # Generate all the Rake tasks
 # Run 'rake -T' to see list of generated tasks (from gem root directory)
-hoe = Hoe.new(GEM_NAME, VERS) do |p|
-  p.author = AUTHOR 
-  p.description = DESCRIPTION
-  p.email = EMAIL
-  p.summary = DESCRIPTION
-  p.url = HOMEPATH
-  p.rubyforge_name = RUBYFORGE_PROJECT if RUBYFORGE_PROJECT
-  p.test_globs = ["test/**/test_*.rb"]
-  p.clean_globs |= ['**/.*.sw?', '*.gem', '.config', '**/.DS_Store']  #An array of file patterns to delete on clean.
-  
+hoe = Hoe.spec GEM_NAME do
+  self.author = AUTHOR 
+  self.description = DESCRIPTION
+  self.email = EMAIL
+  self.summary = DESCRIPTION
+  self.url = HOMEPATH
+  self.rubyforge_name = RUBYFORGE_PROJECT if RUBYFORGE_PROJECT
+  self.test_globs = ["test/**/test_*.rb"]
+  self.clean_globs |= ['**/.*.sw?', '*.gem', '.config', '**/.DS_Store']
+  self.version = VERS
+
   # == Optional
-  p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  #p.extra_deps = []     # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
-  
-  #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
-  
+  self.changes = self.paragraphs_of("History.txt", 0..1).join("\n\n")
 end
 
 CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\\n\\n")
