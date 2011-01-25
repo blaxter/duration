@@ -7,7 +7,7 @@ DESCRIPTION = %[
   output for a timespan as well as manipulate the timespan itself.  With this
   it is possible to make "countdowns" or "time passed since" type objects.
 ]
-GEM_NAME = 'duration' # what ppl will type to install your gem
+GEM_NAME = 'blaxter-duration' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'duration' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
