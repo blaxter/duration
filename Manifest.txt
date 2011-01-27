@@ -9,11 +9,12 @@ lib/duration.rb
 lib/duration/holidays.rb
 lib/duration/locale.rb
 lib/duration/localizations.rb
-lib/duration/localizations/english.rb
-lib/duration/localizations/korean.rb
-lib/duration/localizations/french.rb
 lib/duration/localizations/dutch.rb
+lib/duration/localizations/english.rb
+lib/duration/localizations/french.rb
+lib/duration/localizations/korean.rb
 lib/duration/localizations/polish.rb
+lib/duration/localizations/spanish.rb
 lib/duration/numeric.rb
 lib/duration/time.rb
 lib/duration/time/holidays.rb
